@@ -449,6 +449,7 @@ var resizePizzas = function(size) {
 
   // this function simply takes the size to which all pizzas have to be converted
   // and then selectively calculate size and then percentage size and put it there
+  // Cameron explained this.
   function changePizzaSizes(size) {
     switch(size) {
       case "1":
@@ -510,16 +511,18 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
 // Moves the sliding background pizzas based on scroll position
+// I have done many upgrades in this function
+// some calculations are moved outside the for loop and some even out of function
 function updatePositions() {
   //requestAnimationFrame(updatePositions);
   frame++;
   window.performance.mark("mark_start_frame");
-  var items = document.querySelectorAll('.mover');
-  var long = items.length;
+  //var items = document.getElementsByClassName("mover");//moved out of the function as elements are same every time and there is no need to calculate it every time we scrollTop
+  var long = items.length;//moved outside the for loop, no need to calculate in every loop
   //console.log(items.length);
-  var phaseIn = document.body.scrollTop / 1250;
+  var phaseOut = document.body.scrollTop / 1250;//this also has been moved outside the for loop for same reason above
   for (var i = 0; i < long; i++) {
-    var phase = Math.sin(phaseIn + (i % 5));
+    var phase = Math.sin(phaseOut + (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
   }
 
@@ -540,7 +543,7 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 22; i++) {
+  for (var i = 0; i < 30; i++) {// decreased the number of  background pizzas
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza-mini.png";
@@ -552,3 +555,4 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   updatePositions();
 });
+var items = document.getElementsByClassName("mover");//this was earlier in updatePositions function, moved outside for less calculation every time the updatePositions is being called.
